@@ -1,6 +1,7 @@
 from enum import Enum
 
 from board import Board
+from solver import solve
 
 
 class Mode(Enum):
@@ -45,3 +46,11 @@ if __name__ == "__main__":
                 entered_board.append([int(char) for char in line])
 
         board_to_solve = Board(entered_board)
+        result = solve(board_to_solve)
+
+        if result.is_solved():
+            print("A unique solution to the puzzle was found")
+        else:
+            print("A unique solution to the puzzle could not be found")
+
+        # todo output puzzle such that incomplete puzzles render the remaining options
