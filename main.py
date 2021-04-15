@@ -1,6 +1,7 @@
 from enum import Enum
 
 from board import Board
+from generator import generate_game
 from solver import solve
 
 
@@ -32,9 +33,12 @@ if __name__ == "__main__":
 
     if mode == Mode.GENERATE:
         print("Doing some very computationally expensive work to generate a board for you...")
+        game_board = generate_game()
+        print("Board has been generated")
+        # todo output the puzzle with blanks instead of options
     else:
         print("Enter each line of the Sudoku board with no spaces.  Mark unknown digits with 0.")
-        print("Example: 123056780")
+        print("Example: 123056780 when column 4 and 9 require values")
         entered_board = []
         while len(entered_board) < 9:
             line = input("Enter line {0}: ".format(len(entered_board) + 1))
@@ -49,8 +53,8 @@ if __name__ == "__main__":
         result = solve(board_to_solve)
 
         if result.is_solved():
-            print("A unique solution to the puzzle was found")
+            print("A unique solution to the puzzle was found.")
         else:
-            print("A unique solution to the puzzle could not be found")
+            print("A unique solution to the puzzle could not be found.")
 
         # todo output puzzle such that incomplete puzzles render the remaining options

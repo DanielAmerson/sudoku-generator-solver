@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import List
+from typing import List, Set
 
 
 class Board:
@@ -25,5 +25,13 @@ class Board:
 
         return result
 
+    def assign_value(self, row_num, column_num, value):
+        self.__board[row_num][column_num] = [value]
+
+    def values_seen_by_cell(self, row_num, column_num) -> Set[int]:
+        # todo implement this logic
+        return set()
+
     def is_solved(self):
+        # todo implement this logic
         return False
