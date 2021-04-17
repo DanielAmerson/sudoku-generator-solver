@@ -16,7 +16,7 @@ class Board:
     def current_state(self) -> List[List[List[int]]]:
         return deepcopy(self.__board)
 
-    def flatten(self) -> List[List[int]]:
+    def flatten(self) -> List[List[int]]:  # todo cache this result and only regenerate when the board changes
         result: List[List[int]] = [[0 for _ in range(1, 10)] for _ in range(9)]
         for column_num in range(9):
             for cell_num in range(9):
@@ -28,9 +28,16 @@ class Board:
     def assign_value(self, row_num, column_num, value):
         self.__board[row_num][column_num] = [value]
 
+    def values_in_row(self, row_num) -> Set[int]:
+        return set(element[0] for element in self.__board[row_num] if len(element) == 1)
+
     def values_seen_by_cell(self, row_num, column_num) -> Set[int]:
-        # todo implement this logic
-        return set()
+        if len(self.__board[row_num][column_num]) == 1:
+            # if the cell is solved just assume it can 'see' every other value somewhere
+            return set(range(1, 10)) - {self.__board[row_num][column_num]}
+
+        # todo implement column and box functions
+        return self.values_in_row(row_num)
 
     def is_solved(self):
         # todo implement this logic
