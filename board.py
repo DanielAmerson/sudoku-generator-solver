@@ -29,16 +29,23 @@ class Board:
         self.__board[row_num][column_num] = [value]
 
     def values_in_row(self, row_num) -> Set[int]:
-        return set(element[0] for element in self.__board[row_num] if len(element) == 1)
+        return Board.__values_in_cells(self.__board[row_num])
+
+    def values_in_column(self, col_num) -> Set[int]:
+        return Board.__values_in_cells([element[col_num] for element in self.__board])
 
     def values_seen_by_cell(self, row_num, column_num) -> Set[int]:
         if len(self.__board[row_num][column_num]) == 1:
             # if the cell is solved just assume it can 'see' every other value somewhere
             return set(range(1, 10)) - {self.__board[row_num][column_num]}
 
-        # todo implement column and box functions
-        return self.values_in_row(row_num)
+        # todo implement box functions
+        return self.values_in_row(row_num) | self.values_in_column(column_num)
 
     def is_solved(self):
         # todo implement this logic
         return False
+
+    @staticmethod
+    def __values_in_cells(cells: List[List[int]]) -> Set[int]:
+        return set(element[0] for element in cells if len(element) == 1)
