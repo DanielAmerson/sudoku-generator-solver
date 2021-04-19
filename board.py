@@ -34,13 +34,24 @@ class Board:
     def values_in_column(self, col_num) -> Set[int]:
         return Board.__values_in_cells([element[col_num] for element in self.__board])
 
+    def values_in_box_at_location(self, row_num, col_num) -> Set[int]:
+        box_row_start = (row_num // 3) * 3
+        box_col_start = (col_num // 3) * 3
+
+        cells: List[List[int]] = []
+        for row_value in range(box_row_start, box_row_start + 3):
+            for col_value in range(box_col_start, box_col_start + 3):
+                cells.append(self.__board[row_value][col_value])
+
+        return Board.__values_in_cells(cells)
+
     def values_seen_by_cell(self, row_num, column_num) -> Set[int]:
         if len(self.__board[row_num][column_num]) == 1:
             # if the cell is solved just assume it can 'see' every other value somewhere
             return set(range(1, 10)) - {self.__board[row_num][column_num]}
 
-        # todo implement box functions
-        return self.values_in_row(row_num) | self.values_in_column(column_num)
+        return self.values_in_row(row_num) | self.values_in_column(column_num) | \
+            self.values_in_box_at_location(row_num, column_num)
 
     def is_solved(self):
         # todo implement this logic
