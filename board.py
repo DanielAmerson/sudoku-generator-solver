@@ -26,7 +26,7 @@ class Board:
         return result
 
     def assign_value(self, row_num, column_num, value):
-        self.__board[row_num][column_num] = [value]
+        self.__board[row_num][column_num] = [value] if 1 <= value <= 9 else list(range(1, 10))
 
     def values_in_row(self, row_num) -> Set[int]:
         return Board.__values_in_cells(self.__board[row_num])

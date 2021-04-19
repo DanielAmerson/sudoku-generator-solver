@@ -2,6 +2,7 @@ from random import shuffle
 from typing import List, Set, Tuple
 
 from board import Board
+from solver import solve
 
 
 def generate_game() -> Board:  # todo accept parameter indicating special game types (cages, thermo, etc.)
@@ -37,10 +38,21 @@ def generate_game() -> Board:  # todo accept parameter indicating special game t
                 if cell_value in column_option[1]:
                     column_option[1].remove(cell_value)
 
-    # todo randomly remove values and determine if the solver can solve it
-    # if it can, remove more values and try to solve again
-    # once the board can no longer be solved by the algorithm in this project, return the most recently solvable board
+    return __determine_solvable_state(board)
 
+
+def __determine_solvable_state(board: Board) -> Board:
+    cell_id_removal_sequence = list(range(81))
+    shuffle(cell_id_removal_sequence)
+    for cell_id in cell_id_removal_sequence:
+        row = cell_id // 9
+        column = cell_id % 9
+        board_to_test = Board(board.flatten())
+        board_to_test.assign_value(row, column, 0)  # remove value to see if the solver can complete this board
+        result = solve(board_to_test)
+        if result.is_solved():
+            # since the solver completed this board, it is safe to assume it is usable and continue pruning
+            board = board_to_test
     return board
 
 
