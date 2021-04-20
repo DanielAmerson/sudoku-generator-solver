@@ -28,13 +28,13 @@ class Board:
     def assign_value(self, row_num, column_num, value):
         self.__board[row_num][column_num] = [value] if 1 <= value <= 9 else list(range(1, 10))
 
-    def values_in_row(self, row_num) -> Set[int]:
+    def values_in_row(self, row_num) -> List[int]:
         return Board.__values_in_cells(self.__board[row_num])
 
-    def values_in_column(self, col_num) -> Set[int]:
+    def values_in_column(self, col_num) -> List[int]:
         return Board.__values_in_cells([element[col_num] for element in self.__board])
 
-    def values_in_box_at_location(self, row_num, col_num) -> Set[int]:
+    def values_in_box_at_location(self, row_num, col_num) -> List[int]:
         box_row_start = (row_num // 3) * 3
         box_col_start = (col_num // 3) * 3
 
@@ -45,18 +45,51 @@ class Board:
 
         return Board.__values_in_cells(cells)
 
-    def values_seen_by_cell(self, row_num, column_num) -> Set[int]:
-        if len(self.__board[row_num][column_num]) == 1:
-            # if the cell is solved just assume it can 'see' every other value somewhere
-            return set(range(1, 10)) - {self.__board[row_num][column_num]}
-
-        return self.values_in_row(row_num) | self.values_in_column(column_num) | \
+    def values_seen_by_cell(self, row_num, column_num) -> List[int]:
+        return self.values_in_row(row_num) + self.values_in_column(column_num) + \
             self.values_in_box_at_location(row_num, column_num)
 
     def is_solved(self):
-        # todo implement this logic
-        return False
+        complete_value_set = set(range(1, 10))
+        for row in range(9):
+            for col in range(9):
+                # todo clean up duplicated code in is_valid
+                row_values = self.values_in_row(row)
+                column_values = self.values_in_column(col)
+                box_values = self.values_in_box_at_location(row, col)
+                if not Board.__cell_is_valid(row_values, column_values, box_values):
+                    return False
+
+                if complete_value_set != set(row_values) or \
+                        complete_value_set != set(column_values) or \
+                        complete_value_set != set(box_values):
+                    return False
+
+        return True
+
+    def is_valid(self):
+        for row in range(9):
+            for col in range(9):
+                row_values = self.values_in_row(row)
+                column_values = self.values_in_column(col)
+                box_values = self.values_in_box_at_location(row, col)
+                if not Board.__cell_is_valid(row_values, column_values, box_values):
+                    return False
+
+        return True
 
     @staticmethod
-    def __values_in_cells(cells: List[List[int]]) -> Set[int]:
-        return set(element[0] for element in cells if len(element) == 1)
+    def __cell_is_valid(row_values, column_values, box_values):
+        if len(row_values) != len(set(row_values)) or \
+                len(column_values) != len(set(column_values)) or \
+                len(box_values) != len(set(box_values)):
+            return False
+        all_values = row_values + column_values + box_values
+        all_values.sort()
+        if all_values[0] < 1 or all_values[-1] > 9:  # this shouldn't be possible with the current interface
+            return False
+        return True
+
+    @staticmethod
+    def __values_in_cells(cells: List[List[int]]) -> List[int]:
+        return [element[0] for element in cells if len(element) == 1]

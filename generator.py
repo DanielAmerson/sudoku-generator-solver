@@ -15,7 +15,7 @@ def generate_game() -> Board:  # todo accept parameter indicating special game t
 
         # find the remaining options for each cell in the row
         for col_number in range(9):
-            remaining_cell_options: Set[int] = all_cell_options - board.values_seen_by_cell(row_number, col_number)
+            remaining_cell_options: Set[int] = all_cell_options - set(board.values_seen_by_cell(row_number, col_number))
             column_options.append((col_number, remaining_cell_options))
 
         # loop through each option and pick/assign an option from the most restricted column until all cells are filled
