@@ -25,8 +25,12 @@ class Board:
 
         return result
 
-    def assign_value(self, row_num, column_num, value):
-        self.__board[row_num][column_num] = [value] if 1 <= value <= 9 else list(range(1, 10))
+    def assign_value(self, row_num: int, column_num: int, values: List[int]):
+        values_to_assign = deepcopy(values) if all(1 <= value <= 9 for value in values) else list(range(1, 10))
+        self.__board[row_num][column_num] = values_to_assign
+
+    def options_at_location(self, row_num, col_num) -> List[int]:
+        return self.__board[row_num][col_num]
 
     def values_in_row(self, row_num) -> List[int]:
         return Board.__values_in_cells(self.__board[row_num])

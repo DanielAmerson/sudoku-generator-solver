@@ -31,7 +31,7 @@ def generate_game() -> Board:  # todo accept parameter indicating special game t
             rarest_option: Tuple[int, int] = __determine_rarest_option(cell_options, column_options)
 
             cell_value = rarest_option[0]
-            board.assign_value(row_number, most_restricted_cell[0], cell_value)
+            board.assign_value(row_number, most_restricted_cell[0], [cell_value])
 
             # remove the selected option from the remaining elements so it won't be reselected
             for column_option in column_options:
@@ -48,7 +48,8 @@ def __determine_solvable_state(board: Board) -> Board:
         row = cell_id // 9
         column = cell_id % 9
         board_to_test = Board(board.flatten())
-        board_to_test.assign_value(row, column, 0)  # remove value to see if the solver can complete this board
+        # remove value to see if the solver can complete this board
+        board_to_test.assign_value(row, column, list(range(1, 10)))
         result = solve(board_to_test)
         if result.is_solved():
             # since the solver completed this board, it is safe to assume it is usable and continue pruning
