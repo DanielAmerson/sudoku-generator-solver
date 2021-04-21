@@ -1,3 +1,4 @@
+from copy import deepcopy
 from random import shuffle
 from typing import List, Set, Tuple
 
@@ -47,13 +48,14 @@ def __determine_solvable_state(board: Board) -> Board:
     for cell_id in cell_id_removal_sequence:
         row = cell_id // 9
         column = cell_id % 9
-        board_to_test = Board(board.flatten())
+        board_to_test = deepcopy(board)
         # remove value to see if the solver can complete this board
         board_to_test.assign_value(row, column, list(range(1, 10)))
         result = solve(board_to_test)
         if result.is_solved():
             # since the solver completed this board, it is safe to assume it is usable and continue pruning
             board = board_to_test
+
     return board
 
 

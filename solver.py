@@ -1,4 +1,4 @@
-from typing import Tuple
+from copy import deepcopy
 
 from board import Board
 
@@ -8,7 +8,7 @@ def solve(board: Board) -> Board:
     current_board = Board(board.flatten())  # clone the board to safely mutate it
     if current_board.is_valid():
         while progressing and not board.is_solved():
-            previous_board = Board(current_board.flatten())
+            previous_board = deepcopy(current_board)
 
             for row in range(9):
                 for column in range(9):
@@ -19,7 +19,7 @@ def solve(board: Board) -> Board:
                         remaining_possibilities = set(range(1, 10)) - values_seen_by_cell
                         current_board.assign_value(row, column, list(remaining_possibilities))
 
-                # todo apply more advanced techniques
-                progressing = previous_board.current_state() != current_board.current_state()
+            # todo apply more advanced techniques
+            progressing = previous_board.current_state() != current_board.current_state()
 
     return current_board
