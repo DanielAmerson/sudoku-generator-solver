@@ -100,9 +100,9 @@ class Board:
                     cell_row2 = cell_row2 + Board.__fill_cell()
                     cell_row3 = cell_row3 + Board.__fill_cell()
                 else:
-                    cell_row1 = cell_row1 + Board.__determine_marks_for_row(1, possibilities)
-                    cell_row2 = cell_row2 + Board.__determine_marks_for_row(2, possibilities)
-                    cell_row3 = cell_row3 + Board.__determine_marks_for_row(3, possibilities)
+                    cell_row1 = cell_row1 + Board.__determine_marks_for_row(0, possibilities)
+                    cell_row2 = cell_row2 + Board.__determine_marks_for_row(1, possibilities)
+                    cell_row3 = cell_row3 + Board.__determine_marks_for_row(2, possibilities)
             print(cell_row1)
             print(cell_row2)
             print(cell_row3)
@@ -111,7 +111,7 @@ class Board:
 
     @staticmethod
     def __determine_marks_for_row(row_num: int, possibilities: Set[int]):
-        row_values = range(row_num * 3, (row_num * 3) + 3)
+        row_values = range((row_num * 3) + 1, (row_num * 3) + 4)
         return Board.__fill_cell(
             cell1=row_values[0] if row_values[0] in possibilities else ' ',
             cell2=row_values[1] if row_values[1] in possibilities else ' ',
