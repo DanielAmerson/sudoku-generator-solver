@@ -82,6 +82,46 @@ class Board:
 
         return True
 
+    def pretty_print(self, show_pencil_marks=False):
+        row_divider = ' --- ' * 9
+        for row in range(9):
+            print(row_divider)
+            cell_row1 = ''
+            cell_row2 = ''
+            cell_row3 = ''
+            for column in range(9):
+                possibilities = set(self.__board[row][column])
+                if len(possibilities) == 1:
+                    cell_row1 = cell_row1 + Board.__fill_cell()
+                    cell_row2 = cell_row2 + Board.__fill_cell(cell2=possibilities.pop())
+                    cell_row3 = cell_row3 + Board.__fill_cell()
+                elif not show_pencil_marks:
+                    cell_row1 = cell_row1 + Board.__fill_cell()
+                    cell_row2 = cell_row2 + Board.__fill_cell()
+                    cell_row3 = cell_row3 + Board.__fill_cell()
+                else:
+                    cell_row1 = cell_row1 + Board.__determine_marks_for_row(1, possibilities)
+                    cell_row2 = cell_row2 + Board.__determine_marks_for_row(2, possibilities)
+                    cell_row3 = cell_row3 + Board.__determine_marks_for_row(3, possibilities)
+            print(cell_row1)
+            print(cell_row2)
+            print(cell_row3)
+
+        print(row_divider)
+
+    @staticmethod
+    def __determine_marks_for_row(row_num: int, possibilities: Set[int]):
+        row_values = range(row_num * 3, (row_num * 3) + 3)
+        return Board.__fill_cell(
+            cell1=row_values[0] if row_values[0] in possibilities else ' ',
+            cell2=row_values[1] if row_values[1] in possibilities else ' ',
+            cell3=row_values[2] if row_values[2] in possibilities else ' '
+        )
+
+    @staticmethod
+    def __fill_cell(cell1=' ', cell2=' ', cell3=' '):
+        return '|{0}{1}{2}|'.format(cell1, cell2, cell3)
+
     @staticmethod
     def __cell_is_valid(row_values, column_values, box_values):
         if len(row_values) != len(set(row_values)) or \
