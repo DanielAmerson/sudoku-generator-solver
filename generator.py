@@ -16,7 +16,7 @@ def generate_game() -> Board:  # todo accept parameter indicating special game t
 
         # find the remaining options for each cell in the row
         for col_number in range(9):
-            remaining_cell_options: Set[int] = all_cell_options - set(board.values_seen_by_cell(row_number, col_number))
+            remaining_cell_options: Set[int] = all_cell_options - board.values_seen_by_cell(row_number, col_number)
             column_options.append((col_number, remaining_cell_options))
 
         # loop through each option and pick/assign an option from the most restricted column until all cells are filled
@@ -32,7 +32,7 @@ def generate_game() -> Board:  # todo accept parameter indicating special game t
             rarest_option: Tuple[int, int] = __determine_rarest_option(cell_options, column_options)
 
             cell_value = rarest_option[0]
-            board.assign_value(row_number, most_restricted_cell[0], [cell_value])
+            board.assign_value(row_number, most_restricted_cell[0], {cell_value})
 
             # remove the selected option from the remaining elements so it won't be reselected
             for column_option in column_options:
@@ -43,20 +43,28 @@ def generate_game() -> Board:  # todo accept parameter indicating special game t
 
 
 def __determine_solvable_state(board: Board) -> Board:
-    cell_id_removal_sequence = list(range(81))
+    range_size = 81
+    cell_id_removal_sequence = list(range(range_size))
     shuffle(cell_id_removal_sequence)
-    for cell_id in cell_id_removal_sequence:
+    for index, cell_id in enumerate(cell_id_removal_sequence):
+        __print_progress(index, range_size, '')
         row = cell_id // 9
         column = cell_id % 9
         board_to_test = deepcopy(board)
         # remove value to see if the solver can complete this board
-        board_to_test.assign_value(row, column, list(range(1, 10)))
+        board_to_test.assign_value(row, column, set(range(1, 10)))
         result = solve(board_to_test)
         if result.is_solved():
             # since the solver completed this board, it is safe to assume it is usable and continue pruning
             board = board_to_test
 
+    __print_progress(range_size, range_size)
+
     return board
+
+
+def __print_progress(current_index, max_index, end='\n'):
+    print('\rProgress: {:2.1%}'.format(current_index / max_index), end=end)
 
 
 # compare options to other cells to see which values can be placed in the fewest cells
