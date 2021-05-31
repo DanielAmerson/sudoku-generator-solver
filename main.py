@@ -22,7 +22,13 @@ def is_integer(value):
 
 
 if __name__ == "__main__":
-    seed_value = argv[1] if len(argv) > 1 else int(time())
+    seed_value = int(time())
+    if len(argv) > 1:
+        try:
+            seed_value = int(argv[1])
+        except ValueError:
+            print("Provided seed value was ignored as it was not an integer.")
+
     seed(seed_value)
     print("Seed set to {0}.  To reproduce this run, provide this value during start up.".format(seed_value))
 
