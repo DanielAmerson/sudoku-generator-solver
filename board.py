@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import List, Set
+from typing import List, Optional, Set
 
 
 class Board:
@@ -31,6 +31,13 @@ class Board:
 
     def options_at_location(self, row_num, col_num) -> Set[int]:
         return self.__board[row_num][col_num]
+
+    def solved_value_at_location(self, row_num, col_num) -> Optional[int]:
+        options = self.options_at_location(row_num, col_num)
+        if len(options) > 1:
+            return None
+
+        return list(options)[0]
 
     def solved_values_in_row(self, row_num) -> List[int]:
         return Board.__values_in_cells(self.__board[row_num])

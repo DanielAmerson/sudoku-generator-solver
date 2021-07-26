@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import List, Set, Tuple
+from typing import Dict, List, FrozenSet, Set, Tuple
 
 from board import Board
 
@@ -13,6 +13,9 @@ def solve(board: Board) -> Board:
 
             # apply basic Sudoku rules by filtering on n-tuples
             filter_restricted_tuples(current_board)
+
+            # todo when allowing difficulty to be applied, don't use this rule for easy boards
+            filter_x_wing_values(current_board)
 
             # todo apply more advanced techniques
             progressing = previous_board.current_state() != current_board.current_state()
@@ -32,6 +35,37 @@ def filter_restricted_tuples(board: Board):
         __filter_restricted_tuples_in_coords(board, coords_in_box)  # box...duh
         __filter_restricted_tuples_in_coords(board, {(division_count, entry) for entry in range(9)})  # row
         __filter_restricted_tuples_in_coords(board, {(entry, division_count) for entry in range(9)})  # column
+
+
+# todo this logic is currently looking only at column X-Wings (add logic to rotate the board)
+def filter_x_wing_values(board: Board):
+    for value in range(1, 10):
+        potential_x_wing_coords: [Set[int]] = [set() for _ in range(9)]  # column: [rows]
+        for column in range(9):
+            rows_with_value: Set[int] = set()
+            for row in range(9):
+                if value in board.options_at_location(row, column):
+                    rows_with_value.add(row)
+            if len(rows_with_value) == 2:  # 3 for swordfish?
+                potential_x_wing_coords[column] = rows_with_value
+
+        rows_to_column_map: {Tuple[int, int]: Set[int]} = {}
+        for column in range(9):
+            rows = tuple(potential_x_wing_coords[column])
+            if rows:
+                if rows not in rows_to_column_map:
+                    rows_to_column_map[rows] = set()
+                rows_to_column_map[rows].add(column)
+
+        for rows in rows_to_column_map:
+            columns = rows_to_column_map[rows]
+            if len(columns) == 2:  # 3 for swordfish?
+                columns_to_remove_entry = [column for column in range(9) if column not in columns]
+                for row in rows:
+                    for column in columns_to_remove_entry:
+                        current_options: Set[int] = set(board.options_at_location(row, column))
+                        remaining_options: Set[int] = current_options - {value}
+                        board.assign_value(row, column, remaining_options)
 
 
 def __filter_restricted_tuples_in_coords(board: Board, coords: Set[Tuple[int, int]], combination: List[int] = None):

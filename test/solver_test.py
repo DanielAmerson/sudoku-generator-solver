@@ -115,3 +115,39 @@ def test_moderate_incomplete_boards_are_solved():
     assert solved_board.is_solved()
     assert solved_board.is_valid()
     assert solved_board.flatten() == solution_board.flatten()
+
+
+def test_incomplete_boards_with_x_wings_are_solved():
+    matrix = [
+        [6, 0, 0, 0, 9, 0, 0, 0, 7],
+        [0, 4, 0, 0, 0, 7, 1, 0, 0],
+        [0, 0, 2, 8, 0, 0, 0, 5, 0],
+        [8, 0, 0, 0, 0, 0, 0, 9, 0],
+        [0, 0, 0, 0, 7, 0, 0, 0, 0],
+        [0, 3, 0, 0, 0, 0, 0, 0, 8],
+        [0, 5, 0, 0, 0, 2, 3, 0, 0],
+        [0, 0, 4, 5, 0, 0, 0, 2, 0],
+        [9, 0, 0, 0, 3, 0, 0, 0, 4],
+    ]
+
+    solution = [
+        [6, 8, 3, 1, 9, 5, 2, 4, 7],
+        [5, 4, 9, 6, 2, 7, 1, 8, 3],
+        [7, 1, 2, 8, 4, 3, 9, 5, 6],
+        [8, 6, 5, 3, 1, 4, 7, 9, 2],
+        [4, 9, 1, 2, 7, 8, 6, 3, 5],
+        [2, 3, 7, 9, 5, 6, 4, 1, 8],
+        [1, 5, 6, 4, 8, 2, 3, 7, 9],
+        [3, 7, 4, 5, 6, 9, 8, 2, 1],
+        [9, 2, 8, 7, 3, 1, 5, 6, 4]
+    ]
+
+    original_board = Board(matrix)
+    solved_board = solve(original_board)
+
+    solution_board = Board(solution)
+
+    assert original_board.flatten() != solved_board.flatten()
+    assert solved_board.is_solved()
+    assert solved_board.is_valid()
+    assert solved_board.flatten() == solution_board.flatten()
