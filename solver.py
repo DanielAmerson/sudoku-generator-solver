@@ -37,8 +37,17 @@ def filter_restricted_tuples(board: Board):
         __filter_restricted_tuples_in_coords(board, {(entry, division_count) for entry in range(9)})  # column
 
 
-# todo this logic is currently looking only at column X-Wings (add logic to rotate the board)
 def filter_x_wing_values(board: Board):
+    __filter_single_orientation_x_wing_values(board)
+    board.rotate()  # rotate the board so that the x-wing solving logic works in both orientations
+    __filter_single_orientation_x_wing_values(board)
+    board.rotate()
+    board.rotate()
+    board.rotate()
+
+
+# column x_wings_only
+def __filter_single_orientation_x_wing_values(board: Board):
     for value in range(1, 10):
         potential_x_wing_coords: [Set[int]] = [set() for _ in range(9)]  # column: [rows]
         for column in range(9):
