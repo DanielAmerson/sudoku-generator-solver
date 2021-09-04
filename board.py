@@ -25,6 +25,14 @@ class Board:
 
         return result
 
+    def rotate(self) -> None:
+        cloned = self.current_state()
+        self.__board = [[set() for _ in range(9)] for _ in range(9)]
+
+        for column in range(9):
+            for row in range(9):
+                self.__board[row][len(cloned) - 1 - column] = cloned[column][row]
+
     def assign_value(self, row_num: int, column_num: int, values: Set[int]):
         values_to_assign = deepcopy(values) if all(1 <= value <= 9 for value in values) else set(range(1, 10))
         self.__board[row_num][column_num] = values_to_assign
@@ -115,6 +123,12 @@ class Board:
             print(cell_row3)
 
         print(row_divider)
+
+    def __eq__(self, other):
+        if other is None or type(other) is not Board:
+            return False
+
+        return self.__board == other.__board
 
     @staticmethod
     def __determine_marks_for_row(row_num: int, possibilities: Set[int]):
